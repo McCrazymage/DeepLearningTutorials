@@ -179,7 +179,14 @@ class dA(object):
         # b_prime corresponds to the bias of the visible
         self.b_prime = bvis
         # tied weights, therefore W_prime is W transpose
-        self.W_prime = self.W.T
+        self.W_prime = theano.shared(value=numpy.asarray(
+                numpy_rng.uniform(
+                    low=-4 * numpy.sqrt(6. / (n_hidden + n_visible)),
+                    high=4 * numpy.sqrt(6. / (n_hidden + n_visible)),
+                    size=(n_hidden, n_visible)
+                ),
+                dtype=theano.config.floatX
+            ), name='W', borrow=True)
         self.theano_rng = theano_rng
         # if no input is given, generate a variable representing the input
         if input is None:
@@ -189,7 +196,7 @@ class dA(object):
         else:
             self.x = input
 
-        self.params = [self.W, self.b, self.b_prime]
+        self.params = [self.W, self.b, self.W_prime, self.b_prime]
 
     def get_corrupted_input(self, input, corruption_level):
         """This function keeps ``1-corruption_level`` entries of the inputs the
