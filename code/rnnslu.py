@@ -367,9 +367,9 @@ def main(param=None):
             param['vr'], param['tr'] = res_valid['r'], res_test['r']
             param['be'] = e
 
-            subprocess.call(['mv', folder + '/current.test.txt',
+            subprocess.call(['mv', '-f', folder + '/current.test.txt',
                             folder + '/best.test.txt'])
-            subprocess.call(['mv', folder + '/current.valid.txt',
+            subprocess.call(['mv', '-f', folder + '/current.valid.txt',
                             folder + '/best.valid.txt'])
         else:
             if param['verbose']:
