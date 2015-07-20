@@ -13,7 +13,9 @@ from theano.tensor.shared_randomstreams import RandomStreams
 from logistic_sgd import LogisticRegression, load_data
 from mlp import HiddenLayer
 from rbm import RBM
-
+import sklearn.metrics as mt
+import gzip
+import cPickle
 
 # start-snippet-1
 class DBN(object):
@@ -275,10 +277,19 @@ class DBN(object):
 
         return train_fn, valid_score, test_score
 
-
-def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
-             pretrain_lr=0.01, k=1, training_epochs=1000,
+'''
+def test_DBN(finetune_lr=0.1, pretraining_epochs=1,
+             pretrain_lr=0.01, k=1, training_epochs=1,
              dataset='mnist.pkl.gz', batch_size=10):
+'''
+if __name__ == '__main__':
+    finetune_lr=0.1
+    pretraining_epochs=10
+    pretrain_lr=0.01
+    k=1
+    training_epochs=100
+    dataset='mnist.pkl.gz'
+    batch_size=10
     """
     Demonstrates how to train and test a Deep Belief Network.
 
@@ -307,7 +318,7 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     test_set_x, test_set_y = datasets[2]
 
     # compute number of minibatches for training, validation and testing
-    n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
+    n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size/100
 
     # numpy random generator
     numpy_rng = numpy.random.RandomState(123)
@@ -342,9 +353,11 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
 
     end_time = time.clock()
     # end-snippet-2
+    '''
     print >> sys.stderr, ('The pretraining code for file ' +
                           os.path.split(__file__)[1] +
                           ' ran for %.2fm' % ((end_time - start_time) / 60.))
+    '''
     ########################
     # FINETUNING THE MODEL #
     ########################
@@ -432,11 +445,18 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
             'with test performance %f %%'
         ) % (best_validation_loss * 100., best_iter + 1, test_score * 100.)
     )
+    '''
     print >> sys.stderr, ('The fine tuning code for file ' +
                           os.path.split(__file__)[1] +
                           ' ran for %.2fm' % ((end_time - start_time)
-                                              / 60.))
-
-
+                                              / 60.)
+    '''
+    f = gzip.open('mnist.pkl.gz', 'rb')
+    train_set, valid_set, test_set = cPickle.load(f)
+    test_y=numpy.array(test_set[1])
+    test_result = theano.function([],dbn.logLayer.y_pred,givens={dbn.x:test_set_x})
+    print mt.confusion_matrix(test_result(), test_y)
+'''
 if __name__ == '__main__':
     test_DBN()
+'''

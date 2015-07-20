@@ -49,6 +49,8 @@ def tile_raster_images(X, img_shape, tile_shape, tile_spacing=(0, 0),
     :returns: array suitable for viewing as an image.
     (See:`Image.fromarray`.)
     :rtype: a 2-d array with same dtype as X.
+    
+    #param tile_spacing: is the shape of space between the images
 
     """
 
@@ -117,7 +119,9 @@ def tile_raster_images(X, img_shape, tile_shape, tile_spacing=(0, 0),
 
         for tile_row in xrange(tile_shape[0]):
             for tile_col in xrange(tile_shape[1]):
+                #it means if the temporary sample is not exceed the total number of samples
                 if tile_row * tile_shape[1] + tile_col < X.shape[0]:
+                    #the temp sample is this_x
                     this_x = X[tile_row * tile_shape[1] + tile_col]
                     if scale_rows_to_unit_interval:
                         # if we should scale values to be between 0 and 1
