@@ -23,7 +23,7 @@ __docformat__ = 'restructedtext en'
 
 import os
 import sys
-import time
+import timeit
 
 import numpy
 
@@ -191,6 +191,9 @@ class MLP(object):
         self.params = self.hiddenLayer.params + self.logRegressionLayer.params
         # end-snippet-3
 
+        # keep track of model input
+        self.input = input
+
 
 def test_mlp(learning_rate=0.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=1000,
              dataset='mnist.pkl.gz', batch_size=20, n_hidden=500):
@@ -293,9 +296,9 @@ def test_mlp(learning_rate=0.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=1000,
     # specify how to update the parameters of the model as a list of
     # (variable, update expression) pairs
 
-    # given two list the zip A = [a1, a2, a3, a4] and B = [b1, b2, b3, b4] of
-    # same length, zip generates a list C of same size, where each element
-    # is a pair formed from the two lists :
+    # given two lists of the same length, A = [a1, a2, a3, a4] and
+    # B = [b1, b2, b3, b4], zip generates a list C of same size, where each
+    # element is a pair formed from the two lists :
     #    C = [(a1, b1), (a2, b2), (a3, b3), (a4, b4)]
     updates = [
         (param, param - learning_rate * gparam)
@@ -336,7 +339,7 @@ def test_mlp(learning_rate=0.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=1000,
     best_validation_loss = numpy.inf
     best_iter = 0
     test_score = 0.
-    start_time = time.clock()
+    start_time = timeit.default_timer()
 
     epoch = 0
     done_looping = False
@@ -391,7 +394,7 @@ def test_mlp(learning_rate=0.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=1000,
                 done_looping = True
                 break
 
-    end_time = time.clock()
+    end_time = timeit.default_timer()
     print(('Optimization complete. Best validation score of %f %% '
            'obtained at iteration %i, with test performance %f %%') %
           (best_validation_loss * 100., best_iter + 1, test_score * 100.))

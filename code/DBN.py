@@ -2,13 +2,13 @@
 """
 import os
 import sys
-import time
+import timeit
 
 import numpy
 
 import theano
 import theano.tensor as T
-from theano.tensor.shared_randomstreams import RandomStreams
+from theano.sandbox.rng_mrg import MRG_RandomStreams
 
 from logistic_sgd import LogisticRegression, load_data
 from mlp import HiddenLayer
@@ -60,7 +60,7 @@ class DBN(object):
         assert self.n_layers > 0
 
         if not theano_rng:
-            theano_rng = RandomStreams(numpy_rng.randint(2 ** 30))
+            theano_rng = MRG_RandomStreams(numpy_rng.randint(2 ** 30))
 
         # allocate symbolic variables for the data
         self.x = T.matrix('x')  # the data is presented as rasterized images
@@ -338,7 +338,7 @@ if __name__ == '__main__':
                                                 k=k)
 
     print '... pre-training the model'
-    start_time = time.clock()
+    start_time = timeit.default_timer()
     ## Pre-train layer-wise
     for i in xrange(dbn.n_layers):
         # go through pretraining epochs
@@ -351,7 +351,7 @@ if __name__ == '__main__':
             print 'Pre-training layer %i, epoch %d, cost ' % (i, epoch),
             print numpy.mean(c)
 
-    end_time = time.clock()
+    end_time = timeit.default_timer()
     # end-snippet-2
     '''
     print >> sys.stderr, ('The pretraining code for file ' +
@@ -385,7 +385,7 @@ if __name__ == '__main__':
 
     best_validation_loss = numpy.inf
     test_score = 0.
-    start_time = time.clock()
+    start_time = timeit.default_timer()
 
     done_looping = False
     epoch = 0
@@ -437,7 +437,7 @@ if __name__ == '__main__':
                 done_looping = True
                 break
 
-    end_time = time.clock()
+    end_time = timeit.default_timer()
     print(
         (
             'Optimization complete with best validation score of %f %%, '
