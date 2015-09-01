@@ -476,8 +476,11 @@ def train_lstm(
     load_data, prepare_data = get_dataset(dataset)
 
     print 'Loading data'
+    #the 3 dataset is ([train samples],[train sample values])
     train, valid, test = load_data(n_words=n_words, valid_portion=0.05,
                                    maxlen=maxlen)
+    
+    
     if test_size > 0:
         # The test set is sorted by size, but we want to keep random
         # size example.  So we must select a random selection of the
@@ -566,7 +569,7 @@ def train_lstm(
                 x, mask, y = prepare_data(x, y)
                 n_samples += x.shape[1]
                 
-                print 'x is',x,'y is',y
+                print 'x is',x[:3],'y is',y[:3]
 
                 cost = f_grad_shared(x, mask, y)
                 f_update(lrate)
