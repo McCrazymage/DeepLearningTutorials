@@ -27,6 +27,7 @@ def numpy_floatX(data):
 def get_minibatches_idx(n, minibatch_size, shuffle=False):
     """
     Used to shuffle the dataset at each iteration.
+    return a list which item is [index, the content of this index of batch data]
     """
 
     idx_list = numpy.arange(n, dtype="int32")
@@ -564,6 +565,8 @@ def train_lstm(
                 # Return something of shape (minibatch maxlen, n samples)
                 x, mask, y = prepare_data(x, y)
                 n_samples += x.shape[1]
+                
+                print 'x is',x,'y is',y
 
                 cost = f_grad_shared(x, mask, y)
                 f_update(lrate)
